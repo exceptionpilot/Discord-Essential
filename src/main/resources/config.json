@@ -1,0 +1,8 @@
+{
+  "image": {
+    "font": "Monospace",
+    "fontColor": "#fff",
+    "roundImage": true,
+    "backgroundColor": "#fff"
+  }
+}

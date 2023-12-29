@@ -1,2 +1,4 @@
-package git.devchewbacca.modules;public class ModuleManagement {
+package git.devchewbacca.modules;
+
+public class ModuleManagement {
 }

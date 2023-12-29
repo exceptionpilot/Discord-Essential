@@ -1,8 +1,8 @@
-package world.travelgeeks.utils;
+package git.devchewbacca.utils;
 
+import git.devchewbacca.UtilityBot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import world.travelgeeks.TicketBot;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,8 +18,8 @@ public class FileExporter {
         Path path = Paths.get("./" + filename, new String[0]);
 
         if (!Files.exists(path, new LinkOption[0])) {
-            if (TicketBot.class.getClassLoader().getResourceAsStream(filename) == null) return false;
-            Files.copy(Objects.<InputStream>requireNonNull(TicketBot.class.getClassLoader().getResourceAsStream(filename)), path, new CopyOption[0]);
+            if (UtilityBot.class.getClassLoader().getResourceAsStream(filename) == null) return false;
+            Files.copy(Objects.<InputStream>requireNonNull(UtilityBot.class.getClassLoader().getResourceAsStream(filename)), path, new CopyOption[0]);
             logger.info("Export Resource: " + path);
             return true;
         }
@@ -34,8 +34,8 @@ public class FileExporter {
         Path path = Paths.get(destination + "/" + filename, new String[0]);
 
         if (!Files.exists(path, new LinkOption[0])) {
-            if (TicketBot.class.getClassLoader().getResourceAsStream(filename) == null) return false;
-            Files.copy(Objects.<InputStream>requireNonNull(TicketBot.class.getClassLoader().getResourceAsStream(filename)), path, new CopyOption[0]);
+            if (UtilityBot.class.getClassLoader().getResourceAsStream(filename) == null) return false;
+            Files.copy(Objects.<InputStream>requireNonNull(UtilityBot.class.getClassLoader().getResourceAsStream(filename)), path, new CopyOption[0]);
             logger.info("Export Resource: " + path);
             return true;
         }
