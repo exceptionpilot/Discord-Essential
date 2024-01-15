@@ -1,15 +1,11 @@
 package git.devchewbacca;
 
-import git.devchewbacca.commands.TestCommand;
+import git.devchewbacca.commands.DebugCommand;
 import git.devchewbacca.interfaces.ICommand;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.Command;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 
 import java.util.Map;
@@ -17,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CommandManager extends ListenerAdapter {
 
-    private Map<String, ICommand> commandsMap;
+    private final Map<String, ICommand> commandsMap;
     private JDA jda;
 
     public CommandManager() {
@@ -25,11 +21,11 @@ public class CommandManager extends ListenerAdapter {
 
         commandsMap = new ConcurrentHashMap<>();
 
-        commandsMap.put("test", new TestCommand());
+        commandsMap.put("debug", new DebugCommand());
 
         CommandListUpdateAction commands = jda.updateCommands();
 
-        commands.addCommands(Commands.slash("test", "Get the help page for the " + jda.getSelfUser().getName() + "!"));
+        commands.addCommands(Commands.slash("debug", "Get the help page for the " + jda.getSelfUser().getName() + "!"));
 
         // Context Commands
         //commands.addCommands(Commands.context(Command.Type.USER, "Open Ticket"));
