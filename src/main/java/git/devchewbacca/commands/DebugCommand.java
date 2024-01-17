@@ -15,6 +15,7 @@ public class DebugCommand implements ICommand {
 
     Configuration configuration = UtilityBot.getInstance().getConfiguration();
     WelcomeImageDraw welcomeImageDraw = UtilityBot.getInstance().getWelcomeImageDraw();
+    private StatsBannerImageDraw statsBannerImage = UtilityBot.getInstance().getStatsBannerImageDraw();
 
     @Override
     public void execute(SlashCommandInteractionEvent event, User user) {
@@ -27,7 +28,7 @@ public class DebugCommand implements ICommand {
                     )).getMessage("welcome.join")
             ).addFiles(
                     FileUpload.fromData(
-                            new WelcomeImageDraw().draw(event.getUser()),
+                            statsBannerImage.draw(event.getGuild()),
                             "welcome.png"))
                     .queue();
         } catch (Exception e) {

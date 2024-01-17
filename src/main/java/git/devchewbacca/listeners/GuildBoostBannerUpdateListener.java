@@ -17,20 +17,22 @@ public class GuildBoostBannerUpdateListener extends ListenerAdapter {
 
     JDA jda = UtilityBot.getInstance().getJDA();
     Logger logger = LoggerFactory.getLogger(this.getClass());
+    private StatsBannerImageDraw statsBannerImage = UtilityBot.getInstance().getStatsBannerImageDraw();
 
     @Override
     public void onGuildReady(GuildReadyEvent event) {
 
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(4);
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
         this.logger.info("ScheduledExecutorService just started!");
         Guild guild = event.getGuild();
         ScheduledFuture<?> scheduledFuture = executorService.scheduleAtFixedRate(()-> {
-
                 this.logger.info("Check guild is able for update!");
                 if (guild.getBoostCount() >= 7) {
+
                     try {
                         this.logger.info("Updating banner for " + guild.getName()+ "!");
-                        guild.getManager().setBanner(Icon.from(new StatsBannerImageDraw().draw(guild), Icon.IconType.PNG)).queue();
+                        guild.getManager().setBanner(Icon.from(statsBannerImage.draw(guild), Icon.IconType.PNG)).queue();
+                        this.logger.info("Done!");
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

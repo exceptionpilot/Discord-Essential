@@ -4,6 +4,8 @@ import git.devchewbacca.UtilityBot;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -13,15 +15,18 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class StatsBannerImageDraw {
 
     public File[] banners;
-    public int selectedBanner = 0;
+    public Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public StatsBannerImageDraw() {
-        File directory = new File("images/banners/");
+        File directory = new File("images/banners");
+        this.logger.info("Fetching all banner...");
         if (!directory.exists())
             directory.mkdirs();
         this.banners = directory.listFiles(new FilenameFilter() {
@@ -29,11 +34,12 @@ public class StatsBannerImageDraw {
                 return name.endsWith(".png");
             }
         });
+        assert this.banners != null;
+        this.logger.info("Number of banners found: " + this.banners.length);
     }
 
     public File selectBanner() {
-        int random = ThreadLocalRandom.current().nextInt(this.banners.length, selectedBanner);
-        selectedBanner = random;
+        int random = ThreadLocalRandom.current().nextInt(this.banners.length);
         return this.banners[random];
     }
 
@@ -65,12 +71,12 @@ public class StatsBannerImageDraw {
         FontMetrics metrics = graphics2D.getFontMetrics(font);
         graphics2D.setFont(font);
 
-        graphics2D.drawString(formatInt(onlineCount),
+        graphics2D.drawString(String.valueOf(onlineCount),
                 140,
                 430
         );
 
-        graphics2D.drawString(formatInt(guild.getMemberCount()),
+        graphics2D.drawString(String.valueOf(guild.getMemberCount()),
                 140,
                 500
         );
@@ -79,11 +85,6 @@ public class StatsBannerImageDraw {
         ImageIO.write(bufferedImage, "png", byteArrayOutput);
         byteArrayOutput.flush();
         return byteArrayOutput.toByteArray();
-    }
-
-    public String formatInt(double value) {
-        DecimalFormat df = new DecimalFormat("###.###.###");
-        return df.format(value);
     }
 
 }
