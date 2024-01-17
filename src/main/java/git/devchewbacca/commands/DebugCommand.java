@@ -27,7 +27,7 @@ public class DebugCommand implements ICommand {
                     )).getMessage("welcome.join")
             ).addFiles(
                     FileUpload.fromData(
-                            new StatsBannerImageDraw().draw(event.getGuild()),
+                            new WelcomeImageDraw().draw(event.getUser()),
                             "welcome.png"))
                     .queue();
         } catch (Exception e) {

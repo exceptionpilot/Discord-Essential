@@ -12,11 +12,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class StatsBannerImageDraw {
 
     public File[] banners;
+    public int selectedBanner = 0;
 
     public StatsBannerImageDraw() {
         File directory = new File("images/banners/");
@@ -30,7 +32,8 @@ public class StatsBannerImageDraw {
     }
 
     public File selectBanner() {
-        int random = ThreadLocalRandom.current().nextInt(this.banners.length);
+        int random = ThreadLocalRandom.current().nextInt(this.banners.length, selectedBanner);
+        selectedBanner = random;
         return this.banners[random];
     }
 
@@ -62,12 +65,12 @@ public class StatsBannerImageDraw {
         FontMetrics metrics = graphics2D.getFontMetrics(font);
         graphics2D.setFont(font);
 
-        graphics2D.drawString(String.valueOf(onlineCount),
+        graphics2D.drawString(formatInt(onlineCount),
                 140,
                 430
         );
 
-        graphics2D.drawString(String.valueOf(guild.getMemberCount()),
+        graphics2D.drawString(formatInt(guild.getMemberCount()),
                 140,
                 500
         );
@@ -77,4 +80,10 @@ public class StatsBannerImageDraw {
         byteArrayOutput.flush();
         return byteArrayOutput.toByteArray();
     }
+
+    public String formatInt(double value) {
+        DecimalFormat df = new DecimalFormat("###.###.###");
+        return df.format(value);
+    }
+
 }

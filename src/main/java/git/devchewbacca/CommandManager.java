@@ -25,7 +25,7 @@ public class CommandManager extends ListenerAdapter {
 
         CommandListUpdateAction commands = jda.updateCommands();
 
-        commands.addCommands(Commands.slash("debug", "Get the help page for the " + jda.getSelfUser().getName() + "!"));
+        //commands.addCommands(Commands.slash("debug", "Get the help page for the " + jda.getSelfUser().getName() + "!"));
 
         // Context Commands
         //commands.addCommands(Commands.context(Command.Type.USER, "Open Ticket"));

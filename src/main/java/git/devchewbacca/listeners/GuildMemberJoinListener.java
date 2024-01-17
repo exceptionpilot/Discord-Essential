@@ -10,6 +10,8 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.restaction.MessageCreateAction;
 import net.dv8tion.jda.api.utils.FileUpload;
 
+import java.text.NumberFormat;
+
 public class GuildMemberJoinListener extends ListenerAdapter {
 
     private WelcomeImageDraw welcomeImageDraw = UtilityBot.getInstance().getWelcomeImageDraw();

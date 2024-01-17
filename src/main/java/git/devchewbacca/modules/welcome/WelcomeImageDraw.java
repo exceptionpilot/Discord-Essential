@@ -43,15 +43,15 @@ public class WelcomeImageDraw {
     }
 
     public byte[] draw(User user) throws Exception {
-        ImageProxy avatar = user.getAvatarUrl() !=null ?
-                user.getAvatar() : user.getDefaultAvatar();
+        ImageProxy avatar = user.getAvatarUrl() !=null ? user.getAvatar()  : user.getDefaultAvatar();
         CompletableFuture<InputStream> stream = avatar.download(128);
         BufferedImage inputImage = ImageIO.read(stream.get());
+        Image scaleImage = inputImage.getScaledInstance(imageTemplate.getAvatarWidth(),imageTemplate.getAvatarHeight(), Image.SCALE_SMOOTH);
         BufferedImage editAvatar = new BufferedImage(imageTemplate.getAvatarWidth(),imageTemplate.getAvatarHeight(), 2);
-        Graphics2D graphics2D = editAvatar.createGraphics();
-        graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        graphics2D.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-        graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        Graphics2D box = editAvatar.createGraphics();
+        box.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        box.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+        box.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
 //        graphics2D.setClip(
 //                new Ellipse2D.Float(
@@ -61,7 +61,7 @@ public class WelcomeImageDraw {
 //                        editAvatar.getHeight()
 //                ));
 
-        graphics2D.fill(new RoundRectangle2D.Float(
+        box.fill(new RoundRectangle2D.Float(
                 0.0F,
                 0.0F,
                 editAvatar.getWidth(),
@@ -70,14 +70,15 @@ public class WelcomeImageDraw {
                 imageTemplate.getAvatarCorners()
         ));
 
-        graphics2D.setComposite(AlphaComposite.SrcAtop);
-        graphics2D.drawImage(
-                inputImage,
+        box.setComposite(AlphaComposite.SrcAtop);
+        box.drawImage(
+                scaleImage,
                 0,
                 0,
                 imageTemplate.getAvatarWidth(),
-                imageTemplate.getAvatarHeight(), null);
-        graphics2D.dispose();
+                imageTemplate.getAvatarHeight(),
+                null);
+        box.dispose();
 
         BufferedImage banner = new BufferedImage(imageTemplate.getBannerWidth(),imageTemplate.getBannerHeight(), 2);
         Graphics2D editBanner = banner.createGraphics();
@@ -95,7 +96,8 @@ public class WelcomeImageDraw {
         if (imageTemplate.isCustomBackground()) {
             editBanner.setComposite(AlphaComposite.SrcAtop);
             BufferedImage customBackground = ImageIO.read(selectBanner());
-            editBanner.drawImage(customBackground,
+            editBanner.drawImage(
+                    customBackground,
                     null,
                     banner.getWidth() / 2 - customBackground.getWidth() / 2,
                     banner.getHeight() / 2 - customBackground.getHeight() / 2
@@ -104,14 +106,14 @@ public class WelcomeImageDraw {
 
         editBanner.setPaint(imageTemplate.getSecondaryColor());
         Font fontHeader = new Font(imageTemplate.getFontName(), Font.BOLD, imageTemplate.getFontHeaderSize());
-        FontMetrics metricsHeader = graphics2D.getFontMetrics(fontHeader);
+        FontMetrics metricsHeader = editBanner.getFontMetrics(fontHeader); // TODO: box. oder editBanner
         editBanner.setFont(fontHeader);
         editBanner.drawString(user.getEffectiveName(),
                 (banner.getWidth() - metricsHeader.stringWidth(user.getEffectiveName())) / 2,
                 (banner.getHeight() - metricsHeader.getHeight()) / 2 + metricsHeader.getAscent() + 70
         );
         Font fontSubtitle = new Font(imageTemplate.getFontName(), Font.ITALIC, imageTemplate.getFontSubtitleSize());
-        FontMetrics metricsSubtitle = graphics2D.getFontMetrics(fontSubtitle);
+        FontMetrics metricsSubtitle = editBanner.getFontMetrics(fontSubtitle); // TODO: box. oder editBanner
         editBanner.setFont(fontSubtitle);
         editBanner.drawString(user.getName(),
                 (banner.getWidth() - metricsSubtitle.stringWidth(user.getName())) / 2,
@@ -121,9 +123,9 @@ public class WelcomeImageDraw {
 
 
         editBanner.drawImage(editAvatar,
-                banner.getWidth() / 2 - inputImage.getWidth() / 2,
-                banner.getHeight() / 2 - inputImage.getHeight() / 2 - 40,
-                inputImage.getWidth(), inputImage.getHeight(), null);
+                banner.getWidth() / 2 - imageTemplate.getAvatarWidth() / 2,
+                banner.getHeight() / 2 - imageTemplate.getAvatarHeight() / 2 - 40,
+                imageTemplate.getAvatarWidth(), imageTemplate.getAvatarHeight(), null);
         editBanner.dispose();
 
         ByteArrayOutputStream byteArrayOutput = new ByteArrayOutputStream();
