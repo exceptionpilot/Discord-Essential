@@ -10,7 +10,9 @@ import io.github.cdimascio.dotenv.Dotenv;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
@@ -45,6 +47,7 @@ public class UtilityBot {
         this.statsBannerImageDraw = new StatsBannerImageDraw();
         JDABuilder builder = JDABuilder.createDefault(env.get("DISCORD_DEV_TOKEN"));
         builder.setStatus(OnlineStatus.ONLINE);
+        builder.setActivity(Activity.customStatus("hannastue.com"));
         builder.enableIntents(GatewayIntent.MESSAGE_CONTENT);
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
         builder.enableIntents(GatewayIntent.GUILD_MESSAGES);
