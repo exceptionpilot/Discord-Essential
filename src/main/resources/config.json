@@ -1,8 +1,6 @@
 {
-  "image": {
-    "font": "Monospace",
-    "fontColor": "#fff",
-    "roundImage": true,
-    "backgroundColor": "#fff"
-  }
+  "lang": "en-EN",
+  "template": "GITHUB_DARK",
+  "embedColorPrimary": "#FCC5E2",
+  "embedColorDanger": "#b32e2e"
 }
