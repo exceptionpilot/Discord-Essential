@@ -22,7 +22,7 @@ public class GuildBoostBannerUpdateListener extends ListenerAdapter {
     @Override
     public void onGuildReady(GuildReadyEvent event) {
 
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(5);
         this.logger.info("ScheduledExecutorService just started!");
         Guild guild = event.getGuild();
         ScheduledFuture<?> scheduledFuture = executorService.scheduleAtFixedRate(()-> {
