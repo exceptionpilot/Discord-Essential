@@ -1,6 +1,6 @@
 package git.devchewbacca.interfaces.adapter;
 
-public interface IWelcomeAdapter {
+public interface IAiAdapter {
 
     void insert(long guildId, long textChannelId);
     long find(long guildId);

@@ -1,21 +1,21 @@
 package git.devchewbacca.database;
 
-import git.devchewbacca.interfaces.adapter.IWelcomeAdapter;
+import git.devchewbacca.interfaces.adapter.IAiAdapter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class WelcomeConnector implements IWelcomeAdapter {
+public class AiConnector implements IAiAdapter {
 
     private final Connection connection;
 
-    public WelcomeConnector(Connection connection) throws SQLException {
+    public AiConnector(Connection connection) throws SQLException {
 
         this.connection = connection;
 
-        String createTableSQL = "CREATE TABLE IF NOT EXISTS welcome ("+
+        String createTableSQL = "CREATE TABLE IF NOT EXISTS ai ("+
                 "guildId BIGINT, " +
                 "textChannelId BIGINT)";
         try (PreparedStatement statement = this.connection.prepareStatement(createTableSQL)) {
@@ -26,7 +26,7 @@ public class WelcomeConnector implements IWelcomeAdapter {
 
     @Override
     public void insert(long guildId, long textChannelId) {
-        String query = "INSERT INTO welcome (guildId, textChannelId) VALUES (?, ?)";
+        String query = "INSERT INTO ai (guildId, textChannelId) VALUES (?, ?)";
 
         try (PreparedStatement statement = this.connection.prepareStatement(query)) {
             statement.setLong(1, guildId);
@@ -40,7 +40,7 @@ public class WelcomeConnector implements IWelcomeAdapter {
 
     @Override
     public long find(long guildId) {
-        String select = "SELECT * FROM welcome WHERE guildId = ? LIMIT 1;";
+        String select = "SELECT * FROM ai WHERE guildId = ? LIMIT 1;";
 
         try (PreparedStatement statement = this.connection.prepareStatement(select)) {
             statement.setLong(1, guildId);
@@ -57,7 +57,7 @@ public class WelcomeConnector implements IWelcomeAdapter {
 
     @Override
     public void delete(long guildId) {
-        try (PreparedStatement statement = this.connection.prepareStatement("DELETE FROM welcome WHERE guildId = ?;")) {
+        try (PreparedStatement statement = this.connection.prepareStatement("DELETE FROM ai WHERE guildId = ?;")) {
             statement.setLong(1, guildId);
             statement.executeUpdate();
         } catch (SQLException exception) {
