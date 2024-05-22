@@ -1,78 +1,67 @@
 package git.devchewbacca.database;
 
-import git.devchewbacca.UtilityBot;
 import git.devchewbacca.interfaces.adapter.IWelcomeAdapter;
-import git.devchewbacca.modules.welcome.objects.Welcome;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class WelcomeConnector implements IWelcomeAdapter {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final Connection connection;
 
-    public WelcomeConnector(Connection connection) {
+    public WelcomeConnector(Connection connection) throws SQLException {
+
         this.connection = connection;
-        try {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS " + "Welcome(" +
-                            "guildId BIGINT(22), " +
-                            "textChannelId BIGINT(22), " +
-                            "templateName BIGINT(22)," +
-                            "isEnabled BIT)");
-            statement.close();
+
+        String createTableSQL = "CREATE TABLE IF NOT EXISTS welcome ("+
+                "guildId BIGINT, " +
+                "textChannelId BIGINT)";
+        try (PreparedStatement statement = this.connection.prepareStatement(createTableSQL)) {
+            statement.executeUpdate();
+        }
+
+    }
+
+    @Override
+    public void insert(long guildId, long textChannelId) {
+        String query = "INSERT INTO welcome (guildId, textChannelId) VALUES (?, ?)";
+
+        try (PreparedStatement statement = this.connection.prepareStatement(query)) {
+            statement.setLong(1, guildId);
+            statement.setLong(2, textChannelId);
+            statement.executeUpdate();
+
         } catch (SQLException exception) {
-            this.logger.info(exception.getMessage());
+            // Add a console log.
         }
     }
 
     @Override
-    public void create(Guild guild, TextChannel channel, String templateName) {
-        try {
-            PreparedStatement statement = this.connection.prepareStatement("INSERT INTO Welcome values(?,?,?,?)");
-            statement.setLong(1, guild.getIdLong());
-            statement.setLong(2, channel.getIdLong());
-            statement.setString(3, templateName);
-            statement.setBoolean(4, true);
+    public long find(long guildId) {
+        String select = "SELECT * FROM welcome WHERE guildId = ? LIMIT 1;";
+
+        try (PreparedStatement statement = this.connection.prepareStatement(select)) {
+            statement.setLong(1, guildId);
+
+            ResultSet rs = statement.executeQuery();
+            if (rs.next()) {
+                return rs.getLong("textChannelId");
+            }
         } catch (SQLException exception) {
-            //TODO: Add someting
+            return 0L;
         }
+        return 0L;
     }
 
     @Override
-    public void update(Guild guild, TextChannel channel, String templateName, boolean isEnabled) {
-        try {
-            PreparedStatement statement = this.connection.prepareStatement("SELECT FROM Welcome WHERE guildId=?");
-        }catch (SQLException e) {
-            this.logger.info(e.getMessage());
-        }
-    }
-
-    @Override
-    public Welcome findByGuildId(long guildId) {
-        JDA jda = UtilityBot.getInstance().getJDA();
-        try {
-            PreparedStatement statement = this.connection.prepareStatement("SELECT FROM Welcome WHERE guildId=?");
-
-            return new Welcome(
-                    jda.getGuildById(statement.getResultSet().getLong("guildId")),
-                    jda.getTextChannelById(statement.getResultSet().getLong("textChannelId")),
-                    statement.getResultSet().getString("templateName"),
-                    statement.getResultSet().getBoolean("isEnabled")
-            );
-
-        } catch (SQLException e) {
-            this.logger.info(e.getMessage());
-            throw new RuntimeException(e);
+    public void delete(long guildId) {
+        try (PreparedStatement statement = this.connection.prepareStatement("DELETE FROM welcome WHERE guildId = ?;")) {
+            statement.setLong(1, guildId);
+            statement.executeUpdate();
+        } catch (SQLException exception) {
+            throw new RuntimeException();
         }
     }
 }
