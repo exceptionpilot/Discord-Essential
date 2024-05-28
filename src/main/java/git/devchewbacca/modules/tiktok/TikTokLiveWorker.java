@@ -4,13 +4,13 @@ import git.devchewbacca.UtilityBot;
 import git.devchewbacca.database.manager.TikTokLiveManagement;
 import io.github.jwdeveloper.tiktok.TikTokLive;
 import io.github.jwdeveloper.tiktok.live.LiveClient;
-import io.github.jwdeveloper.tiktok.live.LiveRoomInfo;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 
 import java.awt.*;
 import java.time.Duration;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
@@ -34,21 +34,21 @@ public class TikTokLiveWorker {
                 .onConnected((liveClient, event) -> {
 
                     EmbedBuilder builder = new EmbedBuilder();
-                    builder.setDescription("[" + tikTokLive.getUsername() + "](https://tiktok.com/@" + tikTokLive.getUsername() + ") hat ein Livestream gestartet.");
+                    builder.setDescription("[" + tikTokLive.getUsername() + "](https://tiktok.com/@" + tikTokLive.getUsername() + "/live) hat ein Livestream gestartet.");
                     builder.setColor(Color.decode("#ff0050"));
 
-                    UtilityBot.getInstance().getJDA().getGuildById(tikTokLive.getGuildId())
-                            .getTextChannelById(tikTokLive.getTextChannelId())
-                            .sendMessageEmbeds(builder.build()).queue();
+                    Guild guild = UtilityBot.getInstance().getJDA().getGuildById(tikTokLive.getGuildId());
+                    guild.getTextChannelById(tikTokLive.getTextChannelId()).sendMessage(guild.getPublicRole().getAsMention()).setEmbeds(builder.build()).queue();
                 })
                 .onLiveEnded(((liveClient, tikTokLiveEndedEvent) -> {
                     EmbedBuilder builder = new EmbedBuilder();
                     builder.setDescription("[" + tikTokLive.getUsername() + "](https://tiktok.com/@" + tikTokLive.getUsername() + ") hat den Livestream beendet.");
+                    builder.addField(new MessageEmbed.Field("Zuschauer", String.valueOf(liveClient.getRoomInfo().getTotalViewersCount()), true));
+                    builder.addField(new MessageEmbed.Field("Likes", String.valueOf(liveClient.getRoomInfo().getLikesCount()), true));
                     builder.setColor(Color.decode("#ff0050"));
 
-                    UtilityBot.getInstance().getJDA().getGuildById(tikTokLive.getGuildId())
-                            .getTextChannelById(tikTokLive.getTextChannelId())
-                            .sendMessageEmbeds(builder.build()).queue();
+                    Guild guild = UtilityBot.getInstance().getJDA().getGuildById(tikTokLive.getGuildId());
+                    guild.getTextChannelById(tikTokLive.getTextChannelId()).sendMessageEmbeds(builder.build()).queue();
 
                     git.devchewbacca.modules.tiktok.TikTokLive tikTok = tikTokLiveManagement.find(tikTokLive.getGuildId(), tikTokLive.getUsername());
                     if (tikTok != null) {
