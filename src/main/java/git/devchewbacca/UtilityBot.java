@@ -52,6 +52,7 @@ public class UtilityBot {
     private final WelcomeConnector welcomeConnector;
     private final WelcomeManagement welcomeManagement;
     private final JDA jda;
+    private final Dotenv env;
 
     public UtilityBot() throws LoginException, IllegalArgumentException, IOException, SQLException {
         instance = this;
@@ -67,7 +68,7 @@ public class UtilityBot {
         exporter.exportResourceFile("en-EN.json", "lang");
         exporter.exportResourceFile("GITHUB_DARK.json", "templates");
 
-        Dotenv env = Dotenv.load();
+        this.env = Dotenv.load();
         this.configuration = new Configuration();
         this.welcomeImageDraw = new WelcomeImageDraw();
         this.statsBannerImageDraw = new StatsBannerImageDraw();
@@ -92,7 +93,6 @@ public class UtilityBot {
 
         JDABuilder builder = JDABuilder.createDefault(env.get("DISCORD_TOKEN"));
         builder.setStatus(OnlineStatus.ONLINE);
-        //builder.setActivity(Activity.customStatus("findyourbuddy.org"));
         builder.enableIntents(GatewayIntent.MESSAGE_CONTENT);
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
         builder.enableIntents(GatewayIntent.GUILD_MESSAGES);
@@ -124,6 +124,10 @@ public class UtilityBot {
 
     public Configuration getConfiguration() {
         return configuration;
+    }
+
+    public Dotenv getEnv() {
+        return env;
     }
 
     public WelcomeImageDraw getWelcomeImageDraw() {

@@ -16,7 +16,7 @@ public class AiCommand implements ICommand {
 
         if (!event.isFromGuild()) return;
 
-        if (!event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
+        if (!event.getMember().hasPermission(Permission.BAN_MEMBERS)) {
             event.deferReply(true)
                     .setContent("Du hast nicht die benötigten Berechtigungen!")
                     .queue();
