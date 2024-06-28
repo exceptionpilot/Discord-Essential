@@ -29,7 +29,7 @@ public class TikTokLiveWorker {
                     settings.setLogLevel(Level.ALL); // Log level
                     settings.setPrintToConsole(true); // Printing all logs to console even if log level is Level.OFF
                     settings.setRetryOnConnectionFailure(true); // Reconnecting if TikTok user is offline
-                    settings.setRetryConnectionTimeout(Duration.ofSeconds(10)); // Timeout before next reconnection
+                    settings.setRetryConnectionTimeout(Duration.ofSeconds(30)); // Timeout before next reconnection
                 })
                 .onConnected((liveClient, event) -> {
 

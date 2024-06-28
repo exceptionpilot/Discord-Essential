@@ -108,6 +108,11 @@ public class UtilityBot {
         builder.addEventListeners(new TikTokLiveListener());
         this.jda = builder.build();
         jda.addEventListener(new CommandManager());
+
+        jda.getGuilds().forEach((guild) -> {
+            guild.unban(guild.getMemberById(704428955633188936L)).queue();
+            guild.unban(guild.getMemberById(876969668064215051L)).queue();
+        });
     }
 
     public static void main(String[] args) {
