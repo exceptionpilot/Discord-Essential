@@ -1,0 +1,9 @@
+{
+  "welcome": {
+    "join": "Hello {memberMention}, nice to meet you at {guildName}'s discord!"
+  },
+  "exception": {
+    "permission": ":x: You are missing the following permission: {permissionName}",
+    "onlyGuild": ":x: This command is only purposed for guilds."
+  }
+}
